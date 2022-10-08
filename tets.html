@@ -1,0 +1,44 @@
+<canvas id="canvas"></canvas>
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d')
+    const targetX = 50;
+    const targetY = 50;
+    const obstacleX = 150;
+    const obstacleY = 50;
+    let aiX = 250;
+    let aiY = 51; 
+    function loop() {
+        // Distance between the vector points
+        const disTargetX = targetX - aiX;
+        const disTargetY = targetY - aiY;
+        const disObstacleX = obstacleX - aiX;
+        const disObstacleY = obstacleY - aiY;
+        // Moves to target by default 
+        const angleTarget = Math.atan2(disTargetY, disTargetX);
+        let moveAngle = angleTarget;
+        // If near obstacle, adjust course and try to avoid it
+        
+        if (Math.sqrt(disObstacleX * disObstacleX + disObstacleY * disObstacleY) < 60) { 
+			const angleObstacle = Math.atan2(disObstacleY, disObstacleX);
+			moveAngle += /*angleTarget -*/angleObstacle;
+		}
+        // Move the vector to desired location 
+        aiX += Math.cos(moveAngle);
+        aiY += Math.sin(moveAngle); //Drawing 
+        ctx.clearRect(0, 0, 600, 200);
+        
+        ctx.beginPath();
+        ctx.fillStyle = "teal";
+        ctx.arc(aiX, aiY, 10, 0, Math.PI * 2, true); 
+        ctx.fill(); 
+        
+        ctx.beginPath();
+        ctx.fillStyle = "purple";
+        ctx.arc(obstacleX, obstacleY, 10, 0, Math.PI * 2, true);
+        ctx.fill();
+        ctx.rect(targetX - 20, targetY - 20,40,40);
+        ctx.stroke();
+        if (aiX > 50) {requestAnimationFrame(loop); } } 
+    requestAnimationFrame(loop);
+</script>
